@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-back
+  labels:
+    app: front-back
+spec:
+  selector:
+    matchLabels:
+      app: front-back
+  template:
+    metadata:
+      labels:
+        app: front-back
+    spec:
+      containers:
+      - name: frontend
+        image: frontend:1
+        ports:
+        - containerPort: 80
+      - name: backend
+        image: backend:1
+        ports:
+        - containerPort: 9000
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: postgre
+  serviceName: "postgre"
+  template:
+    metadata:
+      labels:
+        app: postgre
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: postgre
+        image: postgres:13-alpine
+        env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_DB
+          value: news
+        volumeMounts:
+        - name: postgres
+          mountPath: /usr/local/pgsql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: db
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "my-storage-class"
+      resources:
+        requests:
+          storage: 1Gi
