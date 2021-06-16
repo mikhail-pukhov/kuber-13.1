@@ -24,7 +24,7 @@ spec:
     matchLabels:
       app: frontend
   serviceName: "frontend"
-  replicas:3
+  replicas: 3
   template:
     metadata:
       labels:
@@ -35,7 +35,7 @@ spec:
         image: frontend:1
         env:
         - name: BASE_URL
-          value: http://10.0.3.25:9000
+          value: http://backend:9000
         ports:
         - containerPort: 80
 ---
@@ -67,7 +67,7 @@ spec:
     matchLabels:
       app: backend
   serviceName: "backend"
-  replicas:3
+  replicas: 3
   template:
     metadata:
       labels:
@@ -78,7 +78,7 @@ spec:
         image: backend:1
         env:
         - name: DATABASE_URL
-          value: postgres://postgres:postgres@db:5432/news
+          value: postgres://postgres:postgres@postgres:5432/news
         ports:
         - containerPort: 9000
 
